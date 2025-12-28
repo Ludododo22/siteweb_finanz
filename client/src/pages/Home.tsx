@@ -33,7 +33,7 @@ export default function Home() {
 
   const handleApply = (amount: number, duration: number, currency: string) => {
     setLoanData({ amount, duration, currency });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 500, behavior: 'smooth' });
   };
 
   const nextSlide = () => {
@@ -66,7 +66,7 @@ export default function Home() {
             <button 
               onClick={() => {
                 setLoanData({ amount: 10000, duration: 60, currency: "EUR" });
-                window.scrollTo({ top: 500, behavior: 'smooth' });
+                window.scrollTo({ top: 800, behavior: 'smooth' });
               }}
               className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors"
             >
@@ -76,146 +76,148 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Main Content */}
-      <div className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+      {/* Full-Width Hero Slider */}
+      <div className="relative w-full h-96 lg:h-[500px] overflow-hidden">
+        {heroSlides.map((slide, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: currentSlide === index ? 1 : 0 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
+          >
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
+            {/* Dark Overlay Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
             
-            {/* Left Column: Copy & Trust Indicators */}
-            <div className="lg:col-span-5 space-y-8 pt-8">
+            {/* Text Overlay */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                animate={{ opacity: currentSlide === index ? 1 : 0, y: currentSlide === index ? 0 : 20 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-center px-4"
               >
-                <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight text-slate-900 mb-6">
-                  Financial freedom <br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-                    made simple.
-                  </span>
-                </h1>
-                <p className="text-lg text-slate-600 leading-relaxed mb-8">
-                  Get funded in minutes with our transparent, AI-driven approval process. No hidden fees, just honest banking.
-                </p>
-                
-                <div className="space-y-4">
-                  {[
-                    { icon: Zap, text: "Instant decision within 60 seconds" },
-                    { icon: ShieldCheck, text: "Bank-grade encryption security" },
-                    { icon: Check, text: "Flexible repayment options" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 text-slate-700 font-medium">
-                      <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                        <item.icon className="w-4 h-4" />
-                      </div>
-                      {item.text}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Social Proof */}
-                <div className="mt-12 pt-8 border-t border-slate-200">
-                  <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Trusted by 50,000+ Customers</p>
-                  <div className="flex -space-x-3">
-                    {[1,2,3,4].map((i) => (
-                      <div key={i} className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white ring-1 ring-slate-100" />
-                    ))}
-                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white border-2 border-white flex items-center justify-center text-xs font-bold">
-                      +5k
-                    </div>
-                  </div>
-                </div>
+                <h2 className="text-4xl lg:text-6xl font-bold font-display mb-3 leading-tight">{slide.title}</h2>
+                <p className="text-xl lg:text-2xl text-white/90">{slide.subtitle}</p>
               </motion.div>
             </div>
+          </motion.div>
+        ))}
 
-            {/* Right Column: Calculator OR Form OR Slider */}
-            <div className="lg:col-span-7 relative z-10">
-              {/* Abstract Background Blobs */}
-              <div className="absolute -top-20 -right-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl -z-10 animate-pulse" />
-              <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-cyan-400/20 rounded-full blur-3xl -z-10" />
+        {/* Slider Controls */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200"
+        >
+          <ChevronLeft className="w-6 h-6 lg:w-8 lg:h-8" />
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200"
+        >
+          <ChevronRight className="w-6 h-6 lg:w-8 lg:h-8" />
+        </button>
 
-              <motion.div
-                layout
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              >
-                {loanData ? (
-                  <ApplicationForm 
-                    initialData={loanData} 
-                    onBack={() => setLoanData(null)} 
-                  />
-                ) : (
-                  <>
-                    {/* Hero Slider */}
-                    <div className="relative mb-8 rounded-2xl overflow-hidden shadow-2xl">
-                      <div className="relative h-80 bg-slate-900">
-                        {heroSlides.map((slide, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: currentSlide === index ? 1 : 0 }}
-                            transition={{ duration: 0.8 }}
-                            className="absolute inset-0"
-                          >
-                            <img
-                              src={slide.image}
-                              alt={slide.title}
-                              className="w-full h-full object-cover"
-                            />
-                            {/* Dark Overlay */}
-                            <div className="absolute inset-0 bg-black/40" />
-                            
-                            {/* Text Overlay */}
-                            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: currentSlide === index ? 1 : 0, y: currentSlide === index ? 0 : 20 }}
-                                transition={{ delay: 0.2 }}
-                                className="text-center"
-                              >
-                                <h2 className="text-3xl lg:text-4xl font-bold font-display mb-2">{slide.title}</h2>
-                                <p className="text-lg text-white/80">{slide.subtitle}</p>
-                              </motion.div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-
-                      {/* Slider Controls */}
-                      <button
-                        onClick={prevSlide}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all"
-                      >
-                        <ChevronLeft className="w-6 h-6" />
-                      </button>
-                      <button
-                        onClick={nextSlide}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all"
-                      >
-                        <ChevronRight className="w-6 h-6" />
-                      </button>
-
-                      {/* Dots */}
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-                        {heroSlides.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setCurrentSlide(index)}
-                            className={`w-2 h-2 rounded-full transition-all ${
-                              currentSlide === index ? 'bg-white w-6' : 'bg-white/50'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Calculator below slider */}
-                    <Calculator onApply={handleApply} />
-                  </>
-                )}
-              </motion.div>
-            </div>
-          </div>
+        {/* Dots Navigation */}
+        <div className="absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`transition-all duration-300 rounded-full ${
+                currentSlide === index ? 'bg-white w-8 h-3' : 'bg-white/50 w-3 h-3 hover:bg-white/70'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1">
+        {loanData ? (
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <ApplicationForm 
+              initialData={loanData} 
+              onBack={() => setLoanData(null)} 
+            />
+          </div>
+        ) : (
+          <>
+            {/* Features + Calculator Section */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+              <div className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+                
+                {/* Left Column: Copy & Trust Indicators */}
+                <div className="lg:col-span-5 space-y-8">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight text-slate-900 mb-6">
+                      Liberté <br/>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                        financière
+                      </span>
+                    </h1>
+                    <p className="text-lg text-slate-600 leading-relaxed mb-8">
+                      Obtenez un prêt en minutes avec notre processus d'approbation transparent et alimenté par l'IA. Pas de frais cachés, juste une banque honnête.
+                    </p>
+                    
+                    <div className="space-y-4">
+                      {[
+                        { icon: Zap, text: "Décision instantanée en 60 secondes" },
+                        { icon: ShieldCheck, text: "Sécurité de niveau bancaire" },
+                        { icon: Check, text: "Options de remboursement flexibles" },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 text-slate-700 font-medium">
+                          <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <item.icon className="w-4 h-4" />
+                          </div>
+                          {item.text}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Social Proof */}
+                    <div className="mt-12 pt-8 border-t border-slate-200">
+                      <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Approuvés par 50 000+ clients</p>
+                      <div className="flex -space-x-3">
+                        {[1,2,3,4].map((i) => (
+                          <div key={i} className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white ring-1 ring-slate-100" />
+                        ))}
+                        <div className="w-10 h-10 rounded-full bg-slate-900 text-white border-2 border-white flex items-center justify-center text-xs font-bold">
+                          +5k
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Right Column: Calculator */}
+                <div className="lg:col-span-7 relative z-10">
+                  {/* Abstract Background Blobs */}
+                  <div className="absolute -top-20 -right-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl -z-10 animate-pulse" />
+                  <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-cyan-400/20 rounded-full blur-3xl -z-10" />
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+                    <Calculator onApply={handleApply} />
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Footer */}

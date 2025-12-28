@@ -33,15 +33,111 @@
   --radius: 0.75rem;
 }
 
+.dark {
+  --background: 217 33% 17%;
+  --foreground: 210 40% 98%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 217 33% 17%;
+  --secondary: 217 33% 20%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217 33% 20%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 199 89% 48%;
+  --accent-foreground: 217 33% 17%;
+  --border: 217 33% 25%;
+  --input: 217 33% 20%;
+}
+
 @layer base {
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20;
     font-family: var(--font-body);
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
-    @apply font-bold tracking-tight text-slate-900;
+  h1 {
+    @apply text-3xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight;
+  }
+
+  h2 {
+    @apply text-2xl md:text-4xl font-bold font-display tracking-tight;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-bold font-display;
+  }
+
+  h4, h5, h6 {
+    @apply font-bold font-display;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:bg-blue-800 transition-all duration-200 shadow-lg shadow-blue-600/30 hover:shadow-lg hover:shadow-blue-600/40;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl bg-slate-100 text-slate-900 font-semibold hover:bg-slate-200 active:bg-slate-300 transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 rounded-xl border-2 border-slate-200 text-slate-900 font-semibold hover:bg-slate-50 active:bg-slate-100 transition-all duration-200;
+  }
+
+  .card-base {
+    @apply bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300;
+  }
+
+  .card-elevated {
+    @apply bg-white rounded-2xl border border-slate-100 shadow-lg hover:shadow-2xl transition-all duration-300;
+  }
+
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500;
+  }
+
+  .glass-morphism {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200;
+  }
+
+  .input-field:disabled {
+    @apply bg-slate-50 text-slate-400 cursor-not-allowed;
+  }
+
+  .label-text {
+    @apply text-sm font-semibold text-slate-600 uppercase tracking-wider;
+  }
+
+  .text-secondary {
+    @apply text-slate-600;
+  }
+
+  .text-tertiary {
+    @apply text-slate-500;
+  }
+
+  .badge-info {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold;
+  }
+
+  .badge-success {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold;
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold;
+  }
+
+  .divider {
+    @apply border-t border-slate-200;
   }
 }
 
@@ -49,12 +145,56 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500;
   }
-  
+
   .glass-card {
-    @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-xl;
+    @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-xl rounded-2xl;
   }
 
-  .input-base {
-    @apply w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200;
+  .smooth-shadow {
+    @apply shadow-sm hover:shadow-lg transition-shadow duration-300;
+  }
+
+  .backdrop-blur-sm-custom {
+    @apply backdrop-blur-sm;
+  }
+
+  /* Spacing utilities */
+  .space-section {
+    @apply py-16 lg:py-24;
+  }
+
+  .space-tight {
+    @apply py-8;
+  }
+
+  /* Text utilities */
+  .font-display-bold {
+    @apply font-bold font-display;
+  }
+
+  .text-balance {
+    @apply balance;
+  }
+
+  /* Interactive utilities */
+  .interactive-hover {
+    @apply transition-all duration-200 hover:scale-105;
+  }
+
+  .interactive-button {
+    @apply cursor-pointer select-none transition-all duration-200 active:scale-95;
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
   }
 }

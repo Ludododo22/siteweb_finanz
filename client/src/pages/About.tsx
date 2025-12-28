@@ -7,7 +7,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-slate-50 font-body">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link href="/">
@@ -24,7 +24,7 @@ export default function About() {
               <Link href="/why-us" className="hover:text-blue-600 transition-colors">Pourquoi nous</Link>
             </div>
             <Link href="/">
-              <button className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors cursor-pointer">
+              <button className="btn-primary text-sm">
                 Demander un prêt
               </button>
             </Link>
@@ -61,7 +61,7 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-2xl p-8 border border-slate-200 hover:shadow-lg transition-shadow"
+              className="card-base p-8 hover:shadow-xl transition-all duration-300"
             >
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-4">
                 <value.icon className="w-6 h-6" />

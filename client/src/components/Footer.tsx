@@ -5,7 +5,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-900 text-slate-300 font-body">
+    <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-300 font-body border-t border-slate-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
@@ -19,14 +19,14 @@ export function Footer() {
             <p className="text-slate-400 mb-6 leading-relaxed">
               La banque en ligne moderne pour vos prêts personnels. Transparent, rapide, sécurisé.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+            <div className="flex gap-3">
+              <a href="#" className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center hover:bg-blue-600 hover:scale-110 transition-all duration-200">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+              <a href="#" className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center hover:bg-blue-600 hover:scale-110 transition-all duration-200">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+              <a href="#" className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center hover:bg-blue-600 hover:scale-110 transition-all duration-200">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
@@ -34,23 +34,23 @@ export function Footer() {
 
           {/* Product */}
           <div>
-            <h3 className="font-bold text-white mb-4">Produit</h3>
-            <ul className="space-y-2">
-              <li><Link href="/" className="hover:text-blue-400 transition-colors">Prêts personnels</Link></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Prêts professionnels</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Taux d'intérêt</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Calcul de prêt</a></li>
+            <h3 className="font-bold text-white mb-4 font-display">Produit</h3>
+            <ul className="space-y-2.5">
+              <li><Link href="/" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">Prêts personnels</Link></li>
+              <li><a href="#" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">Prêts professionnels</a></li>
+              <li><a href="#" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">Taux d'intérêt</a></li>
+              <li><a href="#" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">Calcul de prêt</a></li>
             </ul>
           </div>
 
           {/* Company */}
           <div>
-            <h3 className="font-bold text-white mb-4">Entreprise</h3>
-            <ul className="space-y-2">
-              <li><Link href="/about" className="hover:text-blue-400 transition-colors">À Propos</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-blue-400 transition-colors">Comment ça marche</Link></li>
-              <li><Link href="/why-us" className="hover:text-blue-400 transition-colors">Pourquoi nous</Link></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Blog</a></li>
+            <h3 className="font-bold text-white mb-4 font-display">Entreprise</h3>
+            <ul className="space-y-2.5">
+              <li><Link href="/about" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">À Propos</Link></li>
+              <li><Link href="/how-it-works" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">Comment ça marche</Link></li>
+              <li><Link href="/why-us" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">Pourquoi nous</Link></li>
+              <li><a href="#" className="text-slate-400 hover:text-blue-400 transition-colors duration-200">Blog</a></li>
             </ul>
           </div>
 
@@ -75,35 +75,35 @@ export function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-slate-800 my-8" />
+        <div className="border-t border-slate-700 my-8" />
 
         {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-slate-400 text-sm mb-4 md:mb-0">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-slate-400 text-sm">
             © {currentYear} NexBank. Tous droits réservés.
           </p>
           <div className="flex gap-6 text-sm text-slate-400">
-            <a href="#" className="hover:text-blue-400 transition-colors">Conditions d'utilisation</a>
-            <a href="#" className="hover:text-blue-400 transition-colors">Politique de confidentialité</a>
-            <a href="#" className="hover:text-blue-400 transition-colors">Cookies</a>
+            <a href="#" className="hover:text-blue-400 transition-colors duration-200">Conditions d'utilisation</a>
+            <a href="#" className="hover:text-blue-400 transition-colors duration-200">Politique de confidentialité</a>
+            <a href="#" className="hover:text-blue-400 transition-colors duration-200">Cookies</a>
           </div>
         </div>
 
         {/* Security Badges */}
-        <div className="mt-8 pt-8 border-t border-slate-800">
-          <p className="text-slate-400 text-xs mb-4">Sécurité & Conformité</p>
-          <div className="flex flex-wrap gap-4">
-            <div className="px-3 py-1.5 bg-slate-800 rounded-lg text-xs font-semibold text-blue-400">
-              🔒 PSD2 Compliant
+        <div className="mt-8 pt-8 border-t border-slate-700">
+          <p className="text-slate-400 text-xs mb-4 font-semibold uppercase tracking-wider">Sécurité & Conformité</p>
+          <div className="flex flex-wrap gap-3">
+            <div className="px-3 py-1.5 bg-slate-700/50 rounded-lg text-xs font-semibold text-blue-300 border border-slate-600">
+              PSD2 Compliant
             </div>
-            <div className="px-3 py-1.5 bg-slate-800 rounded-lg text-xs font-semibold text-blue-400">
-              🛡️ SSL Encrypted
+            <div className="px-3 py-1.5 bg-slate-700/50 rounded-lg text-xs font-semibold text-blue-300 border border-slate-600">
+              SSL Encrypted
             </div>
-            <div className="px-3 py-1.5 bg-slate-800 rounded-lg text-xs font-semibold text-blue-400">
-              ✓ GDPR Ready
+            <div className="px-3 py-1.5 bg-slate-700/50 rounded-lg text-xs font-semibold text-blue-300 border border-slate-600">
+              GDPR Ready
             </div>
-            <div className="px-3 py-1.5 bg-slate-800 rounded-lg text-xs font-semibold text-blue-400">
-              🏦 FCA Licensed
+            <div className="px-3 py-1.5 bg-slate-700/50 rounded-lg text-xs font-semibold text-blue-300 border border-slate-600">
+              FCA Licensed
             </div>
           </div>
         </div>

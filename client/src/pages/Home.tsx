@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { LoanCalculator } from "@/components/ApplicationForm"; // This import seems wrong in thought process, correction: Use LoanCalculator component
 import { LoanCalculator as Calculator } from "@/components/LoanCalculator";
 import { ApplicationForm } from "@/components/ApplicationForm";
 import { motion } from "framer-motion";
 import { Check, ShieldCheck, Zap } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Home() {
   const [loanData, setLoanData] = useState<{ amount: number; duration: number; currency: string } | null>(null);
@@ -20,19 +20,27 @@ export default function Home() {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl font-display shadow-lg shadow-blue-600/20">
-                N
+            <Link href="/">
+              <div className="flex items-center gap-2 cursor-pointer">
+                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl font-display shadow-lg shadow-blue-600/20">
+                  N
+                </div>
+                <span className="text-xl font-bold font-display text-slate-900">NexBank</span>
               </div>
-              <span className="text-xl font-bold font-display text-slate-900">NexBank</span>
-            </div>
+            </Link>
             <div className="hidden md:flex gap-8 text-sm font-semibold text-slate-600">
-              <a href="#" className="hover:text-blue-600 transition-colors">Personal</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">Business</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">About Us</a>
+              <Link href="/about" className="hover:text-blue-600 transition-colors">À Propos</Link>
+              <Link href="/how-it-works" className="hover:text-blue-600 transition-colors">Comment ça marche</Link>
+              <Link href="/why-us" className="hover:text-blue-600 transition-colors">Pourquoi nous</Link>
             </div>
-            <button className="px-5 py-2.5 rounded-lg bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition-colors">
-              Client Login
+            <button 
+              onClick={() => {
+                setLoanData({ amount: 10000, duration: 60, currency: "EUR" });
+                window.scrollTo({ top: 500, behavior: 'smooth' });
+              }}
+              className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors"
+            >
+              Demander un prêt
             </button>
           </div>
         </div>

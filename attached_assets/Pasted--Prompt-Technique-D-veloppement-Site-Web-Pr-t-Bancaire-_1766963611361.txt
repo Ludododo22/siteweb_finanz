@@ -1,0 +1,419 @@
+# Prompt Technique : Développement Site Web Prêt Bancaire - React/Vite/Tailwind
+
+## Contexte Projet
+**Client** : Banque en ligne européenne  
+**Objectif** : MVP site de prêt sans authentification, process 3 étapes, calculateur multi-devises  
+**Deadline** : 6 semaines  
+**Équipe** : 2 devs front, 1 dev back (API simple)
+
+## Stack Technique
+```json
+{
+  "frontend": {
+    "framework": "React 18+",
+    "bundler": "Vite",
+    "styling": "Tailwind CSS + clsx",
+    "state": "Zustand (lightweight) + React Hook Form",
+    "validation": "Zod",
+    "icons": "Lucide React",
+    "charts": "Recharts",
+    "testing": "Vitest + Testing Library"
+  },
+  "backend": {
+    "api": "RESTful Node/Express ou FastAPI",
+    "validation": "identique Zod schemas",
+    "calculs": "decimal.js pour précision financière"
+  }
+}
+```
+
+## Architecture du Projet
+```
+src/
+├── components/
+│   ├── ui/          # Composants réutilisables (Button, Card, Input)
+│   ├── layout/      # Header, Footer, ProgressBar
+│   ├── forms/       # FormSteps, LoanForm, PersonalInfo, PaymentMethod
+│   └── calculator/  # InterestCalculator, CurrencySelector
+├── pages/
+│   ├── Home.tsx
+│   ├── About.tsx
+│   ├── Loans.tsx
+│   ├── Contact.tsx
+│   └── ApplyLoan/
+│       ├── Step1-Personal.tsx
+│       ├── Step2-Payment.tsx
+│       └── Step3-Summary.tsx
+├── stores/
+│   └── loanStore.ts  # Zustand store global
+├── utils/
+│   ├── validation/
+│   ├── currency/
+│   └── calculators/
+├── hooks/
+│   ├── useLoanCalculator.ts
+│   └── useFormPersist.ts
+└── types/
+    └── index.ts      # Types TypeScript
+```
+
+## Spécifications Techniques Détaillées
+
+### 1. **Page d'accueil** - `Home.tsx`
+```tsx
+// Optimisations :
+// - Lazy loading des sections via Intersection Observer
+// - Skeletons pour contenu asynchrone
+// - WebP images avec fallback
+
+const Home = () => {
+  return (
+    <>
+      <HeroSection 
+        cta={<Link to="/apply" className="btn-primary">Demander un prêt</Link>}
+      />
+      <CalculatorEmbed /> {/* Composant réutilisable */}
+      <LoanTypesGrid />   {/* SSR possible pour SEO */}
+    </>
+  )
+}
+```
+
+### 2. **Calculateur Multi-devises** - `InterestCalculator.tsx`
+```tsx
+// Key features :
+// - Debounced inputs (useDebounce hook)
+// - Memoized calculations (useMemo)
+// - Web Worker pour calculs lourds (si besoin)
+// - Rate caching (sessionStorage)
+
+const currencyRates = {
+  EUR: { baseRate: 3.5, min: 1000, max: 100000 },
+  USD: { baseRate: 4.2, min: 1000, max: 100000 },
+  GBP: { baseRate: 3.8, min: 800, max: 80000 },
+  CHF: { baseRate: 2.9, min: 1000, max: 120000 },
+  JPY: { baseRate: 1.5, min: 100000, max: 10000000 }
+};
+
+// Hook optimisé
+const useLoanCalculation = (amount: number, duration: number, currency: keyof typeof currencyRates) => {
+  return useMemo(() => {
+    const rate = currencyRates[currency];
+    const monthlyRate = rate.baseRate / 100 / 12;
+    const monthlyPayment = amount * monthlyRate * Math.pow(1 + monthlyRate, duration) 
+                          / (Math.pow(1 + monthlyRate, duration) - 1);
+    
+    return {
+      monthly: parseFloat(monthlyPayment.toFixed(2)),
+      total: parseFloat((monthlyPayment * duration).toFixed(2)),
+      interest: parseFloat((monthlyPayment * duration - amount).toFixed(2))
+    };
+  }, [amount, duration, currency]);
+};
+```
+
+### 3. **Formulaire 3 Étapes** - Architecture
+```tsx
+// Store Zustand (optimisé pour formulaires complexes)
+interface LoanStore {
+  step: 1 | 2 | 3;
+  personal: PersonalData;
+  loan: LoanDetails;
+  payment: PaymentMethod;
+  setData: (section: keyof Omit<LoanStore, 'step'>, data: any) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  submit: () => Promise<{ success: boolean; reference: string }>;
+}
+
+// Persistance automatique
+const useFormPersist = (store: LoanStore) => {
+  useEffect(() => {
+    const saved = localStorage.getItem('loan_application');
+    if (saved) store.hydrate(JSON.parse(saved));
+  }, []);
+
+  useEffect(() => {
+    const save = debounce(() => {
+      localStorage.setItem('loan_application', JSON.stringify(store));
+    }, 500);
+    save();
+  }, [store]);
+};
+
+// Validation Zod (partagé front/back)
+const personalSchema = z.object({
+  firstName: z.string().min(2),
+  email: z.string().email(),
+  income: z.number().min(800),
+  identityFile: z.instanceof(File).refine(f => f.size < 5_000_000, "Fichier trop volumineux")
+});
+```
+
+### 4. **Étape 1 : Informations Personnelles** - Optimisations
+```tsx
+const PersonalStep = () => {
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    resolver: zodResolver(personalSchema),
+    mode: 'onBlur' // Validation optimisée
+  });
+
+  // Auto-save sur changement (debounced)
+  const formData = watch();
+  useEffect(() => debouncedSave(formData), [formData]);
+
+  // Upload optimisé avec compression côté client
+  const handleFileUpload = async (file: File) => {
+    if (file.type.startsWith('image/')) {
+      const compressed = await imageCompression(file, { maxSizeMB: 1 });
+      return compressed;
+    }
+    return file;
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Input 
+        {...register('firstName')}
+        error={errors.firstName?.message}
+        autoComplete="given-name"
+      />
+      {/* File upload avec preview */}
+      <FileUpload 
+        accept=".pdf,.jpg,.png"
+        maxSize={5}
+        onUpload={handleFileUpload}
+      />
+    </form>
+  );
+};
+```
+
+### 5. **Étape 2 : Mode de Paiement** - Sécurité
+```tsx
+const PaymentStep = () => {
+  // Masquage partiel des données sensibles
+  const maskCardNumber = (number: string) => 
+    number.replace(/\d(?=\d{4})/g, '*');
+
+  // Validation IBAN en temps réel
+  const validateIBAN = (iban: string) => {
+    // Implémentation légère côté client
+    return iban.length >= 15 && /^[A-Z]{2}\d{2}/.test(iban);
+  };
+
+  // Never store CVV dans le state
+  const [cvv, setCvv] = useState('');
+  const handleCvvChange = (value: string) => {
+    if (/^\d{0,3}$/.test(value)) {
+      setCvv(value);
+    }
+  };
+
+  return (
+    <>
+      <BankTransferForm 
+        onIbanChange={validateIBAN}
+      />
+      <CardForm 
+        onCardNumberChange={maskCardNumber}
+        cvv={cvv}
+        onCvvChange={handleCvvChange}
+      />
+    </>
+  );
+};
+```
+
+### 6. **Étape 3 : Récapitulatif** - Performance
+```tsx
+const SummaryStep = () => {
+  const { data, submit } = useLoanStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Génération PDF côté client (optional)
+  const generatePDF = async () => {
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF();
+    // ... génération optimisée
+    doc.save('demande-pret.pdf');
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const result = await submit();
+      // Redirection vers confirmation avec référence
+      navigate(`/confirmation/${result.reference}`);
+    } catch (error) {
+      // Error boundaries + retry logic
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      <SummarySections data={data} />
+      <Button 
+        onClick={handleSubmit}
+        loading={isSubmitting}
+        disabled={isSubmitting}
+      >
+        Soumettre la demande
+      </Button>
+    </>
+  );
+};
+```
+
+## Optimisations de Performance
+
+### 1. **Code Splitting**
+```tsx
+// Pages lazy loaded
+const ApplyLoan = lazy(() => import('./pages/ApplyLoan'));
+const Calculator = lazy(() => import('./components/calculator/InterestCalculator'));
+
+// Suspense avec fallback optimisé
+<Suspense fallback={<LoanSkeleton />}>
+  <ApplyLoan />
+</Suspense>
+```
+
+### 2. **Bundle Optimization**
+```javascript
+// vite.config.js
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          forms: ['react-hook-form', 'zod'],
+          charts: ['recharts'],
+          utils: ['date-fns', 'clsx']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  }
+});
+```
+
+### 3. **Image Optimization**
+```tsx
+// Component Image optimisé
+const OptimizedImage = ({ src, alt }) => {
+  const webpSrc = src.replace(/\.(jpg|png)$/, '.webp');
+  
+  return (
+    <picture>
+      <source srcSet={webpSrc} type="image/webp" />
+      <source srcSet={src} type={`image/${src.split('.').pop()}`} />
+      <img 
+        src={src} 
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+  );
+};
+```
+
+### 4. **Caching Stratégies**
+```typescript
+// Custom hooks pour caching
+const useCurrencyRates = () => {
+  return useQuery({
+    queryKey: ['currencyRates'],
+    queryFn: fetchRates,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 30 * 60 * 1000 // 30 minutes
+  });
+};
+
+// LocalStorage avec versioning
+const STORAGE_KEY = 'loan_app_v1';
+```
+
+## Sécurité & Conformité
+
+### 1. **Protection des Données**
+```typescript
+// Never log sensitive data
+if (process.env.NODE_ENV === 'development') {
+  // Debug only non-sensitive data
+}
+
+// Sanitization des inputs
+const sanitizeInput = (input: string) => {
+  return DOMPurify.sanitize(input);
+};
+```
+
+### 2. **CSP Headers**
+```html
+<!-- Public/index.html -->
+<meta http-equiv="Content-Security-Policy" 
+      content="default-src 'self'; 
+               script-src 'self' 'unsafe-inline';
+               style-src 'self' 'unsafe-inline';
+               img-src 'self' data: https:">
+```
+
+### 3. **Validation Backend Redondante**
+```typescript
+// Shared Zod schemas entre front et back
+export const loanSchema = personalSchema
+  .merge(loanDetailsSchema)
+  .merge(paymentSchema);
+```
+
+## Scripts de Déploiement
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "analyze": "ANALYZE=true vite build",
+    "test": "vitest",
+    "test:e2e": "playwright test"
+  }
+}
+```
+
+## Métriques à Surveiller
+- **LCP** : < 2.5s (Calculator component)
+- **FID** : < 100ms (Form interactions)
+- **CLS** : < 0.1 (Stable layout)
+- **Bundle size** : < 200kb initial, < 500kb total
+- **Form completion rate** : > 60%
+
+---
+
+**Priorités dev semaine 1-2** :
+1. Setup Vite + Tailwind + Typescript
+2. Component library de base (Button, Input, Card)
+3. Calculateur avec multi-devises
+4. Store Zustand + form persistence
+
+**Priorités dev semaine 3-4** :
+1. Formulaire 3 étapes complètes
+2. Validation Zod + error handling
+3. Upload fichiers optimisé
+
+**Priorités dev semaine 5-6** :
+1. Tests unitaires et e2e
+2. Optimisation performance
+3. Documentation et déploiement
+
+**Points d'attention** :
+- Mobile-first design (70% trafic mobile attendu)
+- Accessibilité niveau AA minimum
+- IE11 non supporté (communiquer clairement)
+- Fallbacks pour JavaScript disabled (bannière d'avertissement)
+
+Ce prompt fournit une base solide pour un développement professionnel avec les bonnes pratiques React modernes, l'optimisation des performances et une architecture scalable.

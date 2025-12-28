@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { CheckCircle, FileText, DollarSign, Clock } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 export default function HowItWorks() {
   const steps = [
@@ -164,6 +165,9 @@ export default function HowItWorks() {
           </Link>
         </motion.div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

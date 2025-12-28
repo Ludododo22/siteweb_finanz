@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Award, Globe, Heart, Users } from "lucide-react";
+import { Award, Globe, Heart, Zap } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 export default function About() {
   return (
@@ -87,8 +88,9 @@ export default function About() {
           </p>
         </motion.div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
-
-import { Zap } from "lucide-react";

@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { TrendingUp, Lock, Users, Zap, Award, Globe } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 export default function WhyUs() {
   const features = [
@@ -211,6 +212,9 @@ export default function WhyUs() {
           </Link>
         </motion.div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
